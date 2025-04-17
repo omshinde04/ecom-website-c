@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account - Amazon Clone</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+
+  <!-- Header -->
+  <header class="bg-blue-600 text-white sticky top-0 z-10 shadow-md">
+    <div class="max-w-7xl mx-auto flex items-center justify-between p-4">
+      <div class="flex items-center space-x-2">
+        <img src="logos/logo1.webp" alt="Amazon Logo" class="h-10">
+        <span class="text-xl font-bold">Amazon Clone</span>
+      </div>
+      <nav class="hidden md:flex space-x-6">
+        <a href="index.html" class="hover:underline">Home</a>
+        <a href="product-listing.html" class="hover:underline">Shop</a>
+        <a href="categories.html" class="hover:underline">Categories</a>
+        <a href="account.html" class="hover:underline">Account</a>
+        <a href="cart.html" class="hover:underline">Cart</a>
+      </nav>
+      <button id="hamburger" class="md:hidden focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="white" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+      </button>
+    </div>
+    <div id="mobileMenu" class="hidden md:hidden bg-blue-500 text-white">
+      <a href="index.html" class="block px-4 py-2 hover:bg-blue-400">Home</a>
+      <a href="product-listing.html" class="block px-4 py-2 hover:bg-blue-400">Shop</a>
+      <a href="categories.html" class="block px-4 py-2 hover:bg-blue-400">Categories</a>
+      <a href="account.html" class="block px-4 py-2 hover:bg-blue-400">Account</a>
+      <a href="cart.html" class="block px-4 py-2 hover:bg-blue-400">Cart</a>
+    </div>
+  </header>
+
+  <!-- Account Section -->
+  <main class="max-w-7xl mx-auto py-8 space-y-8">
+    <h1 class="text-3xl font-bold text-gray-700 text-center">Your Account</h1>
+
+    <!-- Profile Information -->
+    <section class="bg-white p-6 rounded-lg shadow">
+      <h2 class="text-2xl font-semibold text-gray-700 mb-4">Profile</h2>
+      <p class="text-gray-600"><strong>Name:</strong> John Doe</p>
+      <p class="text-gray-600"><strong>Email:</strong> johndoe@example.com</p>
+      <p class="text-gray-600"><strong>Member Since:</strong> January 2021</p>
+      <button class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded mt-4">Edit Profile</button>
+    </section>
+
+    <!-- Notifications -->
+    <section class="bg-white p-6 rounded-lg shadow">
+      <h2 class="text-2xl font-semibold text-gray-700 mb-4">Notifications</h2>
+      <ul id="notifications" class="list-disc pl-6 text-gray-600">
+        <!-- Notifications will be dynamically rendered -->
+      </ul>
+    </section>
+
+    <!-- Wishlist -->
+    <section class="bg-white p-6 rounded-lg shadow">
+      <h2 class="text-2xl font-semibold text-gray-700 mb-4">Wishlist</h2>
+      <ul id="wishlist" class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <!-- Wishlist items will be dynamically added -->
+      </ul>
+    </section>
+
+    <!-- Order History -->
+    <section class="bg-white p-6 rounded-lg shadow">
+      <h2 class="text-2xl font-semibold text-gray-700 mb-4">Order History</h2>
+      <ul id="orderHistory" class="list-disc pl-6 text-gray-600">
+        <!-- Orders will be dynamically added -->
+      </ul>
+    </section>
+
+   <!-- Security Settings -->
+<section class="bg-white p-6 rounded-lg shadow">
+    <h2 class="text-2xl font-semibold text-gray-700 mb-4">Security Settings</h2>
+    <div class="flex flex-wrap gap-4">
+      <button class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded">
+        Change Password
+      </button>
+      <button class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded">
+        Set Two-Factor Authentication
+      </button>
+    </div>
+  </section>
+  
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-blue-600 text-white py-6 w-full">
+    <div class="max-w-7xl mx-auto text-center">
+      <p>© 2025 Amazon Clone. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    // Hamburger Menu
+    const hamburger = document.getElementById("hamburger");
+    const mobileMenu = document.getElementById("mobileMenu");
+    hamburger.addEventListener("click", () => {
+      mobileMenu.classList.toggle("hidden");
+    });
+
+    // Notifications Data
+    const notifications = [
+      "Your order #1234 has been shipped.",
+      "New promotions are available in Electronics.",
+      "Your password was changed recently."
+    ];
+
+    // Render Notifications
+    const notificationsList = document.getElementById("notifications");
+    notificationsList.innerHTML = notifications.map(notification => `<li>${notification}</li>`).join("");
+
+    // Mock Wishlist Items
+    const wishlistItems = [
+      { id: 1, name: "Smartphone", image: "images/smart-phone.jpg" },
+      { id: 2, name: "Laptop", image: "images/laptop.jpg" },
+      { id: 3, name: "Coffee Maker", image: "images/coffe.jpg" },
+      { id: 4, name: "T-Shirt", image: "images/tshirt.jpg" }
+    ];
+
+    // Render Wishlist
+    const wishlistContainer = document.getElementById("wishlist");
+    wishlistContainer.innerHTML = wishlistItems.map(item => `
+      <div class="text-center bg-gray-100 rounded-lg shadow p-4">
+        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 mx-auto">
+        <p class="mt-2">${item.name}</p>
+      </div>
+    `).join("");
+
+    // Mock Order History
+    const orders = [
+      { id: 1, name: "Smartphone", date: "2025-04-01", price: "$499.99" },
+      { id: 2, name: "Laptop", date: "2025-03-15", price: "$899.99" },
+      { id: 3, name: "Coffee Maker", date: "2025-02-20", price: "$39.99" }
+    ];
+
+    // Render Order History
+    const orderHistory = document.getElementById("orderHistory");
+    orderHistory.innerHTML = orders.map(order => `
+      <li><strong>${order.name}</strong> - Purchased on ${order.date} for ${order.price}</li>
+    `).join("");
+  </script>
+
+</body>
+</html>

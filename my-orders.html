@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Orders</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+
+  <!-- Header -->
+  <header class="bg-blue-600 text-white sticky top-0 z-10 shadow-md">
+    <div class="max-w-7xl mx-auto flex items-center justify-between p-4">
+      <div class="flex items-center space-x-2">
+        <img src="logos/logo1.webp" alt="Amazon Logo" class="h-10">
+        <span class="text-xl font-bold">Amazon Clone</span>
+      </div>
+      <nav class="hidden md:flex space-x-6">
+        <a href="index.html" class="hover:underline">Home</a>
+        <a href="product-listing.html" class="hover:underline">Shop</a>
+        <a href="categories.html" class="hover:underline">Categories</a>
+        <a href="account.html" class="hover:underline">Account</a>
+        <a href="cart.html" class="hover:underline">Cart</a>
+      </nav>
+      <button id="hamburger" class="md:hidden focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="white" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- My Orders Section -->
+  <main class="max-w-7xl mx-auto py-8">
+    <h1 class="text-3xl font-bold text-gray-700 mb-6 text-center">My Orders</h1>
+
+    <div id="ordersList" class="space-y-6">
+      <!-- Orders summary will be dynamically loaded -->
+    </div>
+
+    <!-- Order Details Section -->
+    <div id="orderDetails" class="bg-white rounded-lg shadow p-6 mt-8 hidden">
+      <h2 class="text-xl font-semibold mb-4 text-gray-700">Order Details</h2>
+      <div id="detailsContent" class="space-y-6">
+        <!-- Detailed order info will be dynamically loaded -->
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-blue-600 text-white py-6 w-full">
+    <div class="max-w-7xl mx-auto text-center">
+      <p>© 2025 Amazon Clone. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    
+// Get references to the DOM elements
+const ordersContainer = document.getElementById("ordersList");
+const orderDetails = document.getElementById("orderDetails");
+const detailsContent = document.getElementById("detailsContent");
+
+// Fetch orders from localStorage
+const orders = JSON.parse(localStorage.getItem("allOrders")) || [];
+
+// Define possible tracking statuses globally
+const statuses = ["Processing", "Shipped", "Out for Delivery", "Delivered"];
+
+// Render Orders List
+if (orders.length > 0) {
+  orders.forEach((order, index) => {
+    const orderElement = document.createElement("div");
+    orderElement.className = "bg-white rounded-lg shadow p-6";
+
+    // Generate order tracking status
+    const currentStatusIndex = statuses.indexOf(order.status) || 0;
+
+    // Build the status bar
+    const statusBar = statuses.map((status, idx) => `
+      <span class="${idx <= currentStatusIndex ? "text-blue-600 font-bold" : "text-gray-400"}">
+        ${status}${idx < statuses.length - 1 ? " → " : ""}
+      </span>
+    `).join("");
+
+    // Render order summary with tracking
+    orderElement.innerHTML = `
+      <div class="flex justify-between items-center">
+        <div>
+          <p><strong>Order #:</strong> ${index + 1}</p>
+          <p><strong>Date:</strong> ${order.date || "Unknown date"}</p>
+          <p><strong>Time:</strong> ${order.time || "Unknown time"}</p>
+        </div>
+        <div>
+          <p><strong>Total:</strong> <span class="text-lg font-bold text-blue-600">$${order.total || "0.00"}</span></p>
+          <p><strong>Status:</strong> ${order.status || "Processing"}</p>
+        </div>
+      </div>
+      <div class="mt-4">
+        <strong>Tracking:</strong>
+        <div>${statusBar}</div>
+      </div>
+      <button class="mt-4 bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded" onclick="showOrderDetails(${index})">
+        View Details
+      </button>
+    `;
+
+    ordersContainer.appendChild(orderElement);
+  });
+} else {
+  ordersContainer.innerHTML = `<p class="text-center text-gray-600">You have no orders yet.</p>`;
+}
+
+// Show Order Details
+function showOrderDetails(orderIndex) {
+  const selectedOrder = orders[orderIndex];
+
+  // Clear previous details
+  detailsContent.innerHTML = "";
+
+  // Populate details content with Date, Time, and Tracking
+  const currentStatusIndex = statuses.indexOf(selectedOrder.status) || 0; // Use global statuses variable
+  const statusBar = statuses.map((status, idx) => `
+    <span class="${idx <= currentStatusIndex ? "text-blue-600 font-bold" : "text-gray-400"}">
+      ${status}${idx < statuses.length - 1 ? " → " : ""}
+    </span>
+  `).join("");
+
+  detailsContent.innerHTML = `
+    <div>
+      <p><strong>Date:</strong> ${selectedOrder.date || "Unknown date"}</p>
+      <p><strong>Time:</strong> ${selectedOrder.time || "Unknown time"}</p>
+      <p><strong>Expected Delivery:</strong> ${selectedOrder.expectedDelivery || "Unknown"}</p>
+      <p><strong>Total:</strong> <span class="font-bold text-blue-600">$${selectedOrder.total || "0.00"}</span></p>
+    </div>
+    <div>
+      <h3 class="text-lg font-semibold mb-2">Shipping Information</h3>
+      <p>${selectedOrder.customer ? `
+        ${selectedOrder.customer.name}, ${selectedOrder.customer.address}, 
+        ${selectedOrder.customer.city}, ${selectedOrder.customer.zip}, ${selectedOrder.customer.country}`
+        : "No shipping information available."}
+      </p>
+    </div>
+    <div>
+      <h3 class="text-lg font-semibold mb-2">Products Ordered</h3>
+      ${selectedOrder.items.map(item => `
+        <div class="flex items-center justify-between bg-gray-100 p-4 rounded-lg">
+          <img src="${item.image}" alt="${item.name}" class="h-16 w-16 object-contain">
+          <div class="ml-4">
+            <p class="font-medium">${item.name}</p>
+            <p class="text-sm text-gray-500">Quantity: ${item.quantity} × $${item.price.toFixed(2)}</p>
+          </div>
+        </div>
+      `).join("")}
+    </div>
+    <div class="mt-4">
+      <strong>Tracking:</strong>
+      <div>${statusBar}</div>
+    </div>
+  `;
+
+  // Show the order details section
+  orderDetails.classList.remove("hidden");
+}
+
+// Simulate tracking updates (without affecting modal visibility)
+function simulateOrderStatusUpdates() {
+  orders.forEach((order) => {
+    const currentIndex = statuses.indexOf(order.status) || 0;
+
+    if (currentIndex < statuses.length - 1) {
+      order.status = statuses[currentIndex + 1]; // Move to the next status
+    }
+
+    localStorage.setItem("allOrders", JSON.stringify(orders)); // Save updates to localStorage
+  });
+
+  // Check if the modal is visible
+  const modalVisible = !orderDetails.classList.contains("hidden"); // Modal visibility check
+  if (!modalVisible) {
+    location.reload(); // Reload the page if modal is not visible
+  }
+}
+
+// Simulate status update every 10 seconds
+setInterval(simulateOrderStatusUpdates, 10000);
+
+
+  </script>
+
+</body>
+</html>

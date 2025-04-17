@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home - Amazon Clone</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white">
+
+  <!-- Header -->
+  <header class="bg-blue-600 text-white sticky top-0 z-10 shadow-md">
+    <div class="max-w-7xl mx-auto flex items-center justify-between p-4">
+      <div class="flex items-center space-x-2">
+        <img src="logos/logo1.webp" alt="Amazon Logo" class="h-10">
+        <span class="text-xl font-bold">Amazon Clone</span>
+      </div>
+      <nav class="hidden md:flex space-x-6">
+        <a href="index.html" class="hover:underline">Home</a>
+        <a href="product-listing.html" class="hover:underline">Shop</a>
+        <a href="categories.html" class="hover:underline">Categories</a>
+        <a href="account.html" class="hover:underline">Account</a>
+        <a href="cart.html" class="hover:underline">Cart</a>
+      </nav>
+      <button id="hamburger" class="md:hidden focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="white" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+      </button>
+    </div>
+    <div id="mobileMenu" class="hidden md:hidden bg-blue-500 text-white">
+      <a href="index.html" class="block px-4 py-2 hover:bg-blue-400">Home</a>
+      <a href="product-listing.html" class="block px-4 py-2 hover:bg-blue-400">Shop</a>
+      <a href="categories.html" class="block px-4 py-2 hover:bg-blue-400">Categories</a>
+      <a href="account.html" class="block px-4 py-2 hover:bg-blue-400">Account</a>
+      <a href="cart.html" class="block px-4 py-2 hover:bg-blue-400">Cart</a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto py-8">
+    <section class="mb-8">
+      <div class="bg-blue-100 rounded-lg p-8 text-center">
+        <h1 class="text-4xl font-bold mb-4">Welcome to Amazon Clone</h1>
+        <p class="text-lg text-gray-600 mb-6">Discover top products and unbeatable deals.</p>
+        <a href="product-listing.html" class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg">Shop Now</a>
+      </div>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-2xl font-semibold mb-4 text-center">Best-Selling Products</h2>
+      <div id="bestSellingProducts" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+    </section>
+
+    
+  </main>
+  <footer class="bg-blue-600 text-white py-6 w-full">
+    <div class="max-w-7xl mx-auto text-center">
+      <p>© 2025 Amazon Clone. All rights reserved.</p>
+    </div>
+  </footer>
+  
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      position: relative;
+      min-height: 100vh; /* Ensures the body is tall enough */
+    }
+  
+    main {
+      padding-bottom: 100px; /* Adds space to avoid overlap with footer */
+    }
+  
+    footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background-color: #0044cc; /* Adjusted to match your style */
+      text-align: center;
+      color: white;
+      z-index: 10;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+      height: 60px; /* Ensures consistent height */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+  
+
+  <script>
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    hamburger.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+    document.addEventListener('click', (event) => {
+      if (!mobileMenu.contains(event.target) && !hamburger.contains(event.target)) {
+        mobileMenu.classList.add('hidden');
+      }
+    });
+
+    const products = [
+  { id: 1, name: "Smartphone", price: "$499.99", image: "images/smart-phone.jpg" },
+  { id: 2, name: "Laptop", price: "$899.99", image: "images/laptop.jpg" },
+  { id: 3, name: "Bluetooth Speaker", price: "$59.99", image: "images/speaker.jpg" },
+  { id: 4, name: "Wireless Earbuds", price: "$79.99", image: "images/buds.jpg" }
+];
+
+
+    const productGrid = document.getElementById("bestSellingProducts");
+    products.forEach((product) => {
+      productGrid.innerHTML += `
+        <div class="bg-gray-100 rounded-lg shadow p-4 text-center hover:bg-gray-200">
+          <img src="${product.image}" alt="${product.name}" class="mx-auto h-48 w-full object-cover rounded">
+
+          <h3 class="mt-2 font-semibold">${product.name}</h3>
+          <p class="text-gray-500">${product.price}</p>
+          <a href="product-details.html?id=${product.id}" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded mt-2 block">View Details</a>
+        </div>`;
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout - Amazon Clone</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+
+  <!-- Header -->
+  <header class="bg-blue-600 text-white sticky top-0 z-10 shadow-md">
+    <div class="max-w-7xl mx-auto flex items-center justify-between p-4">
+      <div class="flex items-center space-x-2">
+        <img src="logos/logo1.webp" alt="Amazon Logo" class="h-10">
+        <span class="text-xl font-bold">Amazon Clone</span>
+      </div>
+      <nav class="hidden md:flex space-x-6">
+        <a href="index.html" class="hover:underline">Home</a>
+        <a href="product-listing.html" class="hover:underline">Shop</a>
+        <a href="categories.html" class="hover:underline">Categories</a>
+        <a href="account.html" class="hover:underline">Account</a>
+        <a href="cart.html" class="hover:underline">Cart</a>
+      </nav>
+      <button id="hamburger" class="md:hidden focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="white" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+      </button>
+    </div>
+    <div id="mobileMenu" class="hidden md:hidden bg-blue-500 text-white">
+      <a href="index.html" class="block px-4 py-2 hover:bg-blue-400">Home</a>
+      <a href="product-listing.html" class="block px-4 py-2 hover:bg-blue-400">Shop</a>
+      <a href="categories.html" class="block px-4 py-2 hover:bg-blue-400">Categories</a>
+      <a href="account.html" class="block px-4 py-2 hover:bg-blue-400">Account</a>
+      <a href="cart.html" class="block px-4 py-2 hover:bg-blue-400">Cart</a>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto py-8 px-4">
+    <h1 class="text-3xl font-bold text-gray-700 mb-6">Checkout</h1>
+
+    <!-- Cart Items -->
+    <div id="checkoutItems" class="space-y-4 bg-white p-6 rounded-lg shadow mb-6">
+      <!-- Items injected by JS -->
+    </div>
+
+    <!-- Total & Coupon -->
+    <div class="bg-white p-6 rounded-lg shadow mb-6">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold text-gray-700">Total:</h2>
+        <p id="checkoutTotal" class="text-xl font-bold text-blue-600">$0.00</p>
+        <p id="liveTime" class="text-sm text-gray-500 mt-2"></p>
+      </div>
+      <div class="flex space-x-2">
+        <input id="couponCode" type="text" placeholder="Enter Coupon (SAVE10)" class="p-2 border rounded w-full">
+        <button id="applyCoupon" class="bg-blue-500 hover:bg-blue-600 text-white px-4 rounded">Apply</button>
+      </div>
+      <p id="discountNote" class="text-green-600 mt-2 hidden">Coupon applied! 10% discount.</p>
+    </div>
+
+    <!-- Shipping Info -->
+    <div class="bg-white p-6 rounded-lg shadow mb-6">
+      <h2 class="text-xl font-semibold mb-4 text-gray-700">Shipping Information</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input type="text" id="name" placeholder="Full Name" class="p-3 border rounded">
+        <input type="text" id="address" placeholder="Address" class="p-3 border rounded">
+        <input type="text" id="city" placeholder="City" class="p-3 border rounded">
+        <input type="text" id="zip" placeholder="ZIP Code" class="p-3 border rounded">
+        <input type="text" id="country" placeholder="Country" class="p-3 border rounded">
+      </div>
+      <div class="mt-4">
+        <label class="inline-flex items-center">
+          <input type="checkbox" class="form-checkbox" id="saveAddress">
+          <span class="ml-2">Save this address for future orders</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Payment Info -->
+    <div class="bg-white p-6 rounded-lg shadow mb-6">
+      <h2 class="text-xl font-semibold text-gray-700 mb-4">Payment</h2>
+      <form id="paymentForm">
+        <label class="block text-gray-600">Card Number</label>
+        <input type="text" id="cardNumber" class="block w-full p-3 border rounded-lg mb-4" placeholder="1234 5678 9012 3456">
+        <label class="block text-gray-600">Expiration Date</label>
+        <input type="text" id="expirationDate" class="block w-full p-3 border rounded-lg mb-4" placeholder="MM/YY">
+        <label class="block text-gray-600">CVV</label>
+        <input type="text" id="cvv" class="block w-full p-3 border rounded-lg mb-4" placeholder="123">
+        <button type="submit" class="bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-lg text-xl w-full">
+          Place Order
+        </button>
+      </form>
+    </div>
+
+    <!-- Order Confirmation Modal -->
+    <div id="orderModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+      <div class="bg-white rounded-lg p-6 shadow-lg w-11/12 md:w-1/3 text-center">
+        <h2 class="text-2xl font-bold mb-2">Order Confirmed!</h2>
+        <p class="mb-4">Your items will arrive by <span id="deliveryDate"></span>.</p>
+        <button onclick="closeModal()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Close</button>
+      </div>
+    </div>
+  </main>
+
+
+  <footer class="bg-blue-600 text-white py-6 w-full">
+    <div class="max-w-7xl mx-auto text-center">
+      <p>© 2025 Amazon Clone. All rights reserved.</p>
+    </div>
+  </footer>
+  
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      position: relative;
+      min-height: 100vh; /* Ensures the body is tall enough */
+    }
+  
+    main {
+      padding-bottom: 100px; /* Adds space to avoid overlap with footer */
+    }
+  
+    footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background-color: #0044cc; /* Adjusted to match your style */
+      text-align: center;
+      color: white;
+      z-index: 10;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+      height: 60px; /* Ensures consistent height */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+
+
+<script>
+// Hamburger Menu
+const hamburger = document.getElementById("hamburger");
+const mobileMenu = document.getElementById("mobileMenu");
+
+hamburger.addEventListener("click", () => {
+  mobileMenu.classList.toggle("hidden");
+});
+
+document.addEventListener("click", (e) => {
+  if (!mobileMenu.contains(e.target) && !hamburger.contains(e.target)) {
+    mobileMenu.classList.add("hidden");
+  }
+});
+
+// Cart Variables
+const checkoutItemsContainer = document.getElementById("checkoutItems");
+const checkoutTotalElement = document.getElementById("checkoutTotal");
+const couponInput = document.getElementById("couponCode");
+const applyCouponBtn = document.getElementById("applyCoupon");
+const discountNote = document.getElementById("discountNote");
+
+let checkoutCart = JSON.parse(sessionStorage.getItem("checkoutCart")) || [];
+let discountApplied = false;
+
+// Render Cart Items
+function renderCart() {
+  checkoutItemsContainer.innerHTML = "";
+  let total = 0;
+
+  checkoutCart.forEach((item, index) => {
+    total += item.price * item.quantity;
+
+    checkoutItemsContainer.innerHTML += `
+      <div class="flex items-center justify-between bg-gray-100 p-4 rounded-lg shadow" data-index="${index}">
+        <img src="${item.image}" alt="${item.name}" class="h-16 w-16 object-contain">
+        <div class="flex-1 ml-4">
+          <h3 class="text-lg font-semibold">${item.name}</h3>
+          <p class="text-gray-500">$${item.price.toFixed(2)}</p>
+          <div class="flex items-center space-x-2 mt-2">
+            <button class="decrease px-2 bg-gray-300 rounded">−</button>
+            <span>${item.quantity}</span>
+            <button class="increase px-2 bg-gray-300 rounded">+</button>
+            <button class="remove ml-4 text-red-500 hover:underline">Remove</button>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  if (discountApplied) {
+    total *= 0.9;
+  }
+
+  checkoutTotalElement.innerText = `$${total.toFixed(2)}`;
+  sessionStorage.setItem("checkoutCart", JSON.stringify(checkoutCart));
+}
+
+// Cart Interaction Buttons
+checkoutItemsContainer.addEventListener("click", (e) => {
+  const itemEl = e.target.closest("[data-index]");
+  const index = itemEl?.dataset?.index;
+
+  if (e.target.classList.contains("increase")) {
+    checkoutCart[index].quantity++;
+  } else if (e.target.classList.contains("decrease")) {
+    if (checkoutCart[index].quantity > 1) checkoutCart[index].quantity--;
+  } else if (e.target.classList.contains("remove")) {
+    checkoutCart.splice(index, 1);
+  }
+
+  renderCart();
+});
+
+// Apply Coupon
+applyCouponBtn.addEventListener("click", () => {
+  const code = couponInput.value.trim().toUpperCase();
+  if (code === "SAVE10") {
+    discountApplied = true;
+    discountNote.classList.remove("hidden");
+    renderCart();
+  } else {
+    alert("Invalid coupon code!");
+  }
+});
+
+renderCart();
+
+// Live Time Display
+function displayLiveTime() {
+  const liveTimeElement = document.getElementById("liveTime");
+  const now = new Date();
+  const formattedTime = now.toLocaleTimeString();
+  liveTimeElement.innerText = `Live Time: ${formattedTime}`;
+}
+
+// Start Live Time Update
+setInterval(displayLiveTime, 1000);
+
+// Payment Form Submission
+document.getElementById("paymentForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  // Form Validation
+  const name = document.getElementById("name").value.trim();
+  const address = document.getElementById("address").value.trim();
+  const city = document.getElementById("city").value.trim();
+  const zip = document.getElementById("zip").value.trim();
+  const country = document.getElementById("country").value.trim();
+  const card = document.getElementById("cardNumber").value.trim();
+  const exp = document.getElementById("expirationDate").value.trim();
+  const cvv = document.getElementById("cvv").value.trim();
+
+  if (!name || !address || !city || !zip || !country || !card || !exp || !cvv) {
+    alert("Please fill in all fields.");
+    return;
+  }
+
+  if (card.length < 13 || card.length > 19 || isNaN(card.replaceAll(" ", ""))) {
+    alert("Invalid card number.");
+    return;
+  }
+
+  if (!/^\d{2}\/\d{2}$/.test(exp)) {
+    alert("Invalid expiration format. Use MM/YY.");
+    return;
+  }
+
+  if (!/^\d{3,4}$/.test(cvv)) {
+    alert("Invalid CVV.");
+    return;
+  }
+
+  // Generate Order Data
+  const deliveryDate = new Date();
+  deliveryDate.setDate(deliveryDate.getDate() + 5);
+
+  const now = new Date(); // Capture current date and time
+  const total = checkoutCart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const finalTotal = discountApplied ? total * 0.9 : total;
+
+  const newOrder = {
+    date: now.toDateString(), // Current order date
+    time: now.toLocaleTimeString(), // Current live time
+    customer: {
+      name, address, city, zip, country,
+    },
+    items: checkoutCart,
+    total: finalTotal.toFixed(2),
+    discountApplied,
+    expectedDelivery: deliveryDate.toDateString(),
+  };
+
+  // Save to localStorage - Append to allOrders
+  const allOrders = JSON.parse(localStorage.getItem("allOrders")) || [];
+  allOrders.push(newOrder);
+  localStorage.setItem("allOrders", JSON.stringify(allOrders));
+
+  // Save the latest order (optional)
+  localStorage.setItem("latestOrder", JSON.stringify(newOrder));
+
+  // Clear the session cart
+  checkoutCart = [];
+  sessionStorage.removeItem("checkoutCart");
+
+  // Redirect to order-summary.html
+  window.location.href = "order-summary.html";
+});
+
+// Optional Modal Close Handler
+function closeModal() {
+  document.getElementById("orderModal").classList.add("hidden");
+}
+
+
+  </script>
+  
+  </body>
+  </html>
+  

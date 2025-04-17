@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Summary</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+
+  <!-- Header -->
+  <header class="bg-blue-600 text-white sticky top-0 z-10 shadow-md">
+    <div class="max-w-7xl mx-auto flex items-center justify-between p-4">
+      <div class="flex items-center space-x-2">
+        <img src="logos/logo1.webp" alt="Amazon Logo" class="h-10">
+        <span class="text-xl font-bold">Amazon Clone</span>
+      </div>
+      <nav class="hidden md:flex space-x-6">
+        <a href="index.html" class="hover:underline">Home</a>
+        <a href="product-listing.html" class="hover:underline">Shop</a>
+        <a href="categories.html" class="hover:underline">Categories</a>
+        <a href="account.html" class="hover:underline">Account</a>
+        <a href="cart.html" class="hover:underline">Cart</a>
+      </nav>
+      <button id="hamburger" class="md:hidden focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="white" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Order Summary Section -->
+  <main class="max-w-3xl mx-auto py-12 px-4 text-center">
+    <h1 class="text-3xl font-bold text-green-600 mb-6">🎉 Thank You for Your Order!</h1>
+    <p class="text-gray-600 mb-6">Your order has been placed successfully. Here are the details:</p>
+
+    <!-- Order Details -->
+    <div class="bg-white rounded-lg shadow p-6 text-left space-y-6">
+      <div>
+        <h2 class="text-xl font-semibold mb-4 text-gray-700">Order Summary</h2>
+        <p><strong>Order Date:</strong> <span id="orderDate"></span></p>
+        <p><strong>Expected Delivery:</strong> <span id="deliveryDate"></span></p>
+        <p><strong>Total:</strong> <span id="orderTotal" class="font-bold text-blue-600 text-lg"></span></p>
+      </div>
+
+      <!-- Customer Details -->
+      <div>
+        <h2 class="text-xl font-semibold mb-4 text-gray-700">Shipping Information</h2>
+        <p id="shippingInfo"></p>
+      </div>
+
+      <!-- Products -->
+      <div>
+        <h2 class="text-xl font-semibold mb-4 text-gray-700">Products Ordered</h2>
+        <div id="productList" class="space-y-4"></div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="mt-8 flex justify-center space-x-4">
+      <a href="product-listing.html" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Continue Shopping</a>
+      <a href="my-orders.html" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">Go to My Orders</a>
+    </div>
+  </main>
+
+  <footer class="bg-blue-600 text-white py-6 w-full">
+    <div class="max-w-7xl mx-auto text-center">
+      <p>© 2025 Amazon Clone. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Fetch Latest Order Details
+    const latestOrder = JSON.parse(localStorage.getItem("latestOrder"));
+
+    if (latestOrder) {
+      // Render Order Date and Delivery
+      document.getElementById("orderDate").innerText = new Date().toDateString();
+      document.getElementById("deliveryDate").innerText = latestOrder.expectedDelivery;
+
+      // Render Total
+      document.getElementById("orderTotal").innerText = `$${latestOrder.total}`;
+
+      // Render Shipping Info
+      const shipping = latestOrder.customer || {};
+      const shippingInfo = `${shipping.name}, ${shipping.address}, ${shipping.city}, ${shipping.zip}, ${shipping.country}`;
+      document.getElementById("shippingInfo").innerText = shippingInfo || "No shipping information available.";
+
+      // Render Products
+      const productList = document.getElementById("productList");
+      latestOrder.items.forEach(item => {
+        const productElement = document.createElement("div");
+        productElement.className = "flex items-center justify-between";
+        productElement.innerHTML = `
+          <img src="${item.image}" alt="${item.name}" class="h-16 w-16 object-contain border">
+          <div class="ml-4">
+            <h3 class="font-medium">${item.name}</h3>
+            <p class="text-sm text-gray-500">Quantity: ${item.quantity} × $${item.price.toFixed(2)}</p>
+          </div>
+        `;
+        productList.appendChild(productElement);
+      });
+    } else {
+      // Fallback Message for Missing Order
+      document.querySelector("main").innerHTML = `
+        <h1 class="text-3xl font-bold text-red-600 mb-6">⚠️ No Order Found!</h1>
+        <p class="text-gray-600">Please place an order to view its details.</p>
+        <div class="mt-8">
+          <a href="checkout.html" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Go to Checkout</a>
+        </div>
+      `;
+    }
+  </script>
+
+</body>
+</html>

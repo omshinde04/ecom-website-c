@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cart - Amazon Clone</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+
+  <!-- Header -->
+  <header class="bg-blue-600 text-white sticky top-0 z-10 shadow-md">
+    <div class="max-w-7xl mx-auto flex items-center justify-between p-4">
+      <div class="flex items-center space-x-2">
+        <img src="logos/logo1.webp" alt="Amazon Logo" class="h-10">
+        <span class="text-xl font-bold">Amazon Clone</span>
+      </div>
+      <nav class="hidden md:flex space-x-6">
+        <a href="index.html" class="hover:underline">Home</a>
+        <a href="product-listing.html" class="hover:underline">Shop</a>
+        <a href="categories.html" class="hover:underline">Categories</a>
+        <a href="account.html" class="hover:underline">Account</a>
+        <a href="cart.html" class="hover:underline">Cart</a>
+      </nav>
+      <button id="hamburger" class="md:hidden focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="white" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+      </button>
+    </div>
+    <div id="mobileMenu" class="hidden md:hidden bg-blue-500 text-white">
+      <a href="index.html" class="block px-4 py-2 hover:bg-blue-400">Home</a>
+      <a href="product-listing.html" class="block px-4 py-2 hover:bg-blue-400">Shop</a>
+      <a href="categories.html" class="block px-4 py-2 hover:bg-blue-400">Categories</a>
+      <a href="account.html" class="block px-4 py-2 hover:bg-blue-400">Account</a>
+      <a href="cart.html" class="block px-4 py-2 hover:bg-blue-400">Cart</a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto py-8">
+    <section>
+      <h1 class="text-3xl font-bold text-gray-700 mb-6">Your Cart</h1>
+
+      <!-- Cart Items -->
+      <div id="cartItems" class="space-y-6 bg-white p-6 rounded-lg shadow">
+        <!-- Items will be dynamically added here -->
+      </div>
+
+      <!-- Total Section -->
+      <div class="mt-6 flex justify-between items-center bg-white p-6 rounded-lg shadow">
+        <h2 class="text-xl font-semibold text-gray-700">Total:</h2>
+        <p id="cartTotal" class="text-xl font-bold text-blue-600">$0.00</p>
+      </div>
+
+      <!-- Checkout Button -->
+      <div class="mt-6 text-center">
+        <button id="proceedToCheckoutBtn" class="bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-lg text-xl">
+          Proceed to Checkout
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-blue-600 text-white py-6 w-full">
+    <div class="max-w-7xl mx-auto text-center">
+      <p>© 2025 Amazon Clone. All rights reserved.</p>
+    </div>
+  </footer>
+  
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      position: relative;
+      min-height: 100vh; /* Ensures the body is tall enough */
+    }
+  
+    main {
+      padding-bottom: 100px; /* Adds space to avoid overlap with footer */
+    }
+  
+    footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background-color: #0044cc; /* Adjusted to match your style */
+      text-align: center;
+      color: white;
+      z-index: 10;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+      height: 60px; /* Ensures consistent height */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+  
+
+  <!-- JavaScript -->
+  <script>
+    // Hamburger Menu
+    const hamburger = document.getElementById("hamburger");
+    const mobileMenu = document.getElementById("mobileMenu");
+    hamburger.addEventListener("click", () => {
+      mobileMenu.classList.toggle("hidden");
+    });
+    document.addEventListener("click", (event) => {
+      if (!mobileMenu.contains(event.target) && !hamburger.contains(event.target)) {
+        mobileMenu.classList.add("hidden");
+      }
+    });
+
+    // Cart Functionality
+    let cart = JSON.parse(localStorage.getItem('cart')) || []; // Load cart from localStorage or initialize empty
+
+    const cartItemsContainer = document.getElementById("cartItems");
+    const cartTotalElement = document.getElementById("cartTotal");
+
+    // Function to Display Cart Items
+    const displayCartItems = () => {
+      cartItemsContainer.innerHTML = ""; // Clear previous items
+      let total = 0;
+
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = `
+          <div class="text-center">
+            <p class="text-gray-600">Your cart is empty.</p>
+          </div>
+        `;
+      } else {
+        cart.forEach((item) => {
+          total += item.price * item.quantity;
+
+          cartItemsContainer.innerHTML += `
+            <div class="flex items-center justify-between bg-gray-100 p-4 rounded-lg shadow">
+              <img src="${item.image}" alt="${item.name}" class="h-16 w-16 object-contain">
+              <div class="flex-1 ml-4">
+                <h3 class="text-lg font-semibold">${item.name}</h3>
+                <p class="text-gray-500">$${item.price.toFixed(2)}</p>
+                <div class="flex items-center space-x-2 mt-2">
+                  <button class="px-2 py-1 bg-gray-300 rounded" onclick="updateQuantity(${item.id}, 'decrease')">-</button>
+                  <span class="px-4 py-1 border">${item.quantity}</span>
+                  <button class="px-2 py-1 bg-gray-300 rounded" onclick="updateQuantity(${item.id}, 'increase')">+</button>
+                </div>
+              </div>
+              <button class="text-red-500 hover:text-red-600" onclick="removeItem(${item.id})">Remove</button>
+            </div>
+          `;
+        });
+      }
+
+      cartTotalElement.innerText = `$${total.toFixed(2)}`; // Update Total
+      localStorage.setItem('cart', JSON.stringify(cart)); // Save updated cart to localStorage
+    };
+
+    // Proceed to Checkout Button Functionality
+    const proceedToCheckout = () => {
+      if (cart.length === 0) {
+        alert("Your cart is empty. Add some products before proceeding to checkout.");
+        return;
+      }
+      sessionStorage.setItem('checkoutCart', JSON.stringify(cart)); // Save cart to sessionStorage
+      window.location.href = "checkout.html"; // Redirect to checkout page
+    };
+
+    document.getElementById("proceedToCheckoutBtn").addEventListener("click", proceedToCheckout);
+
+    // Function to Update Quantity
+    const updateQuantity = (id, action) => {
+      const item = cart.find((i) => i.id === id);
+      if (item) {
+        if (action === "increase") item.quantity += 1;
+        if (action === "decrease" && item.quantity > 1) item.quantity -= 1;
+        displayCartItems();
+      }
+    };
+
+    // Function to Remove Item
+    const removeItem = (id) => {
+      const index = cart.findIndex((i) => i.id === id);
+      if (index !== -1) {
+        cart.splice(index, 1); // Remove item from cart
+        displayCartItems();
+      }
+    };
+
+    // Initial Display of Cart Items
+    displayCartItems();
+  </script>
+
+</body>
+</html>
